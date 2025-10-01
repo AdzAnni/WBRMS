@@ -1,0 +1,528 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>BSCS Alumni Batch 2025 - Memories Gallery</title>
+    <style>
+        /* Global Styles */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        :root {
+            --primary: #2c3e50;
+            --secondary: #3498db;
+            --accent: #e74c3c;
+            --light: #ecf0f1;
+            --dark: #2c3e50;
+        }
+
+        body {
+            background-color: #f9f9f9;
+            color: #333;
+            line-height: 1.6;
+        }
+
+        .container {
+            width: 90%;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 15px;
+        }
+
+        /* Header Styles */
+        header {
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            color: white;
+            padding: 2rem 0;
+            text-align: center;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+
+        .logo-container {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            margin-bottom: 1rem;
+        }
+
+        .logo {
+            width: 80px;
+            height: 80px;
+            background-color: white;
+            border-radius: 50%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            margin-right: 15px;
+            font-weight: bold;
+            color: var(--primary);
+            font-size: 1.5rem;
+        }
+
+        .header-text h1 {
+            font-size: 2.5rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .header-text p {
+            font-size: 1.2rem;
+            opacity: 0.9;
+        }
+
+        /* Navigation */
+        nav {
+            background-color: var(--dark);
+            padding: 1rem 0;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+
+        nav ul {
+            display: flex;
+            justify-content: center;
+            list-style: none;
+        }
+
+        nav li {
+            margin: 0 1rem;
+        }
+
+        nav a {
+            color: white;
+            text-decoration: none;
+            font-weight: 500;
+            padding: 0.5rem 1rem;
+            border-radius: 4px;
+            transition: background-color 0.3s;
+            cursor: pointer;
+        }
+
+        nav a:hover, nav a.active {
+            background-color: var(--secondary);
+        }
+
+        /* Main Content */
+        main {
+            padding: 2rem 0;
+        }
+
+        .section-title {
+            text-align: center;
+            margin-bottom: 2rem;
+            color: var(--primary);
+            position: relative;
+        }
+
+        .section-title::after {
+            content: '';
+            display: block;
+            width: 80px;
+            height: 4px;
+            background-color: var(--secondary);
+            margin: 0.5rem auto;
+        }
+
+        /* Gallery Section */
+        .gallery {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            gap: 1.5rem;
+            margin-bottom: 3rem;
+        }
+
+        .memory-card {
+            background-color: white;
+            border-radius: 8px;
+            overflow: hidden;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            transition: transform 0.3s, box-shadow 0.3s;
+        }
+
+        .memory-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 16px rgba(0, 0, 0, 0.15);
+        }
+
+        .memory-image {
+            width: 100%;
+            height: 200px;
+            object-fit: cover;
+        }
+
+        .memory-content {
+            padding: 1rem;
+        }
+
+        .memory-title {
+            font-size: 1.2rem;
+            margin-bottom: 0.5rem;
+            color: var(--primary);
+        }
+
+        .memory-description {
+            color: #666;
+            font-size: 0.9rem;
+            margin-bottom: 1rem;
+        }
+
+        .memory-date {
+            font-size: 0.8rem;
+            color: #999;
+            text-align: right;
+        }
+
+        /* Upload Section */
+        .upload-section {
+            background-color: white;
+            padding: 2rem;
+            border-radius: 8px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            margin-bottom: 3rem;
+        }
+
+        .upload-form {
+            display: flex;
+            flex-direction: column;
+            gap: 1.5rem;
+        }
+
+        .form-group {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .form-group label {
+            margin-bottom: 0.5rem;
+            font-weight: 500;
+            color: var(--primary);
+        }
+
+        .form-group input,
+        .form-group textarea {
+            padding: 0.8rem;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            font-size: 1rem;
+        }
+
+        .form-group textarea {
+            min-height: 120px;
+            resize: vertical;
+        }
+
+        .upload-btn {
+            background-color: var(--secondary);
+            color: white;
+            border: none;
+            padding: 0.8rem 1.5rem;
+            border-radius: 4px;
+            font-size: 1rem;
+            cursor: pointer;
+            transition: background-color 0.3s;
+            align-self: flex-start;
+        }
+
+        .upload-btn:hover {
+            background-color: #2980b9;
+        }
+
+        /* Footer */
+        footer {
+            background-color: var(--primary);
+            color: white;
+            text-align: center;
+            padding: 2rem 0;
+            margin-top: 2rem;
+        }
+
+        .footer-content {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .social-links {
+            display: flex;
+            gap: 1rem;
+        }
+
+        .social-links a {
+            color: white;
+            font-size: 1.5rem;
+            transition: color 0.3s;
+        }
+
+        .social-links a:hover {
+            color: var(--secondary);
+        }
+
+        /* Responsive Design */
+        @media (max-width: 768px) {
+            .header-text h1 {
+                font-size: 2rem;
+            }
+            
+            nav ul {
+                flex-direction: column;
+                align-items: center;
+            }
+            
+            nav li {
+                margin: 0.5rem 0;
+            }
+            
+            .gallery {
+                grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+            }
+        }
+
+        @media (max-width: 480px) {
+            .gallery {
+                grid-template-columns: 1fr;
+            }
+            
+            .upload-section {
+                padding: 1.5rem;
+            }
+        }
+        
+        /* Success Message */
+        .success-message {
+            background-color: #d4edda;
+            color: #155724;
+            padding: 12px 20px;
+            border-radius: 4px;
+            margin-bottom: 20px;
+            display: none;
+        }
+        
+        /* Section visibility */
+        .section-hidden {
+            display: none;
+        }
+    </style>
+</head>
+<body>
+    <!-- Header Section -->
+    <header>
+        <div class="container">
+            <div class="logo-container">
+                <div class="logo">MSU-SULU</div>
+                <div class="header-text">
+                    <h1>BSCS Alumni Batch 2025</h1>
+                    <p>Mindanao State University - Sulu</p>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- Navigation -->
+    <nav>
+        <div class="container">
+            <ul>
+                <li><a href="#" id="navGallery" class="active">Gallery</a></li>
+                <li><a href="#" id="navUpload">Upload Memory</a></li>
+            </ul>
+        </div>
+    </nav>
+
+    <!-- Main Content -->
+    <main class="container">
+        <!-- Success Message -->
+        <div class="success-message" id="successMessage">
+            Memory added successfully!
+        </div>
+        
+        <!-- Gallery Section -->
+        <section id="gallerySection">
+            <h2 class="section-title">Our Memories</h2>
+            <div class="gallery" id="memoriesGallery">
+                <!-- Memory cards will be dynamically added here -->
+            </div>
+        </section>
+
+        <!-- Upload Section -->
+        <section id="uploadSection" class="section-hidden">
+            <h2 class="section-title">Share Your Memory</h2>
+            <div class="upload-section">
+                <form class="upload-form" id="memoryForm">
+                    <div class="form-group">
+                        <label for="memoryTitle">Memory Title</label>
+                        <input type="text" id="memoryTitle" placeholder="Enter a title for your memory" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="memoryDescription">Memory Description</label>
+                        <textarea id="memoryDescription" placeholder="Describe this memory..." required></textarea>
+                    </div>
+                    <div class="form-group">
+                        <label for="memoryImage">Upload Image</label>
+                        <input type="file" id="memoryImage" accept="image/*" required>
+                    </div>
+                    <button type="submit" class="upload-btn">Share Memory</button>
+                </form>
+            </div>
+        </section>
+    </main>
+
+    <!-- Footer -->
+    <footer>
+        <div class="container">
+            <div class="footer-content">
+                <p>&copy; 2023 BSCS Alumni Batch 2025, MSU-Sulu. All rights reserved.</p>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        // Sample initial memories data
+        const initialMemories = [
+            {
+                id: 1,
+                title: "Graduation Day",
+                description: "Our memorable graduation ceremony at MSU-Sulu",
+                image: "https://via.placeholder.com/300x200/3498db/ffffff?text=Graduation+Day",
+                date: "June 15, 2023"
+            },
+            {
+                id: 2,
+                title: "Final Project Presentation",
+                description: "Presenting our capstone project to the faculty",
+                image: "https://via.placeholder.com/300x200/e74c3c/ffffff?text=Project+Presentation",
+                date: "May 10, 2023"
+            }
+        ];
+
+        // DOM Elements
+        const memoriesGallery = document.getElementById('memoriesGallery');
+        const memoryForm = document.getElementById('memoryForm');
+        const memoryTitle = document.getElementById('memoryTitle');
+        const memoryDescription = document.getElementById('memoryDescription');
+        const memoryImage = document.getElementById('memoryImage');
+        const navGallery = document.getElementById('navGallery');
+        const navUpload = document.getElementById('navUpload');
+        const gallerySection = document.getElementById('gallerySection');
+        const uploadSection = document.getElementById('uploadSection');
+        const successMessage = document.getElementById('successMessage');
+
+        // Load memories from localStorage or use initial data
+        let memories = JSON.parse(localStorage.getItem('bscsMemories')) || initialMemories;
+
+        // Function to display memories
+        function displayMemories() {
+            memoriesGallery.innerHTML = '';
+            
+            if (memories.length === 0) {
+                memoriesGallery.innerHTML = '<p style="grid-column: 1/-1; text-align: center; padding: 2rem;">No memories yet. Be the first to share one!</p>';
+                return;
+            }
+            
+            memories.forEach(memory => {
+                const memoryCard = document.createElement('div');
+                memoryCard.className = 'memory-card';
+                memoryCard.innerHTML = `
+                    <img src="${memory.image}" alt="${memory.title}" class="memory-image">
+                    <div class="memory-content">
+                        <h3 class="memory-title">${memory.title}</h3>
+                        <p class="memory-description">${memory.description}</p>
+                        <p class="memory-date">${memory.date}</p>
+                    </div>
+                `;
+                memoriesGallery.appendChild(memoryCard);
+            });
+        }
+
+        // Function to handle form submission
+        function handleFormSubmit(e) {
+            e.preventDefault();
+            
+            // Get the uploaded file
+            const file = memoryImage.files[0];
+            
+            if (file) {
+                const reader = new FileReader();
+                
+                reader.onload = function(e) {
+                    // Create new memory object
+                    const newMemory = {
+                        id: memories.length + 1,
+                        title: memoryTitle.value,
+                        description: memoryDescription.value,
+                        image: e.target.result,
+                        date: new Date().toLocaleDateString('en-US', { 
+                            year: 'numeric', 
+                            month: 'long', 
+                            day: 'numeric' 
+                        })
+                    };
+                    
+                    // Add to memories array
+                    memories.unshift(newMemory);
+                    
+                    // Save to localStorage
+                    localStorage.setItem('bscsMemories', JSON.stringify(memories));
+                    
+                    // Update display
+                    displayMemories();
+                    
+                    // Reset form
+                    memoryForm.reset();
+                    
+                    // Show success message
+                    successMessage.style.display = 'block';
+                    setTimeout(() => {
+                        successMessage.style.display = 'none';
+                    }, 3000);
+                    
+                    // Switch to gallery view
+                    showGallery();
+                };
+                
+                reader.readAsDataURL(file);
+            }
+        }
+
+        // Function to show gallery section
+        function showGallery() {
+            gallerySection.classList.remove('section-hidden');
+            uploadSection.classList.add('section-hidden');
+            navGallery.classList.add('active');
+            navUpload.classList.remove('active');
+            
+            // Scroll to top of gallery
+            window.scrollTo({
+                top: gallerySection.offsetTop - 100,
+                behavior: 'smooth'
+            });
+        }
+
+        // Function to show upload section
+        function showUpload() {
+            gallerySection.classList.add('section-hidden');
+            uploadSection.classList.remove('section-hidden');
+            navGallery.classList.remove('active');
+            navUpload.classList.add('active');
+            
+            // Scroll to top of upload section
+            window.scrollTo({
+                top: uploadSection.offsetTop - 100,
+                behavior: 'smooth'
+            });
+        }
+
+        // Event Listeners
+        memoryForm.addEventListener('submit', handleFormSubmit);
+        navGallery.addEventListener('click', showGallery);
+        navUpload.addEventListener('click', showUpload);
+
+        // Initialize the gallery
+        displayMemories();
+    </script>
+</body>
+  </html>
