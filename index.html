@@ -1,570 +1,532 @@
-<?php
-include 'config.php';
-
-// Get research statistics
-$stmt = $pdo->query("SELECT 
-    COUNT(*) as total_research,
-    SUM(CASE WHEN remarks = 'Scopus-Indexed Journal' THEN 1 ELSE 0 END) as scopus,
-    SUM(CASE WHEN publication_status = 'Published' THEN 1 ELSE 0 END) as published,
-    SUM(CASE WHEN certificate_path IS NOT NULL AND certificate_path != '' THEN 1 ELSE 0 END) as certificates
-    FROM research");
-$research_stats = $stmt->fetch();
-?>
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Automated Research Management System</title>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <title>MSU-SULU BSCS Batch 2025 Graduates</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css">
     <style>
-        :root {
-            --primary-color: #1a3e72;
-            --primary-light: #2a4d8a;
-            --secondary-color: #e8b013;
-            --secondary-dark: #d19e0a;
-            --accent-color: #f72585;
-            --light-color: #f8f9fa;
-            --dark-color: #212529;
-            --success-color: #4cc9f0;
-            --transition-speed: 0.3s;
-            --section-padding: 80px 0;
-            --border-radius: 12px;
-            --box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
-        }
-        
-        body {
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            color: var(--dark-color);
-            overflow-x: hidden;
+        }
+
+        :root {
+            --primary: #0d4f8b;
+            --secondary: #ffcc00;
+            --light: #f8f9fa;
+            --dark: #343a40;
+            --success: #28a745;
+        }
+
+        body {
+            background-color: #f5f5f5;
+            color: #333;
             line-height: 1.6;
         }
-        
-        /* Navigation */
-        .navbar {
-            padding: 20px 0;
-            transition: all var(--transition-speed) ease;
-            background-color: rgba(255, 255, 255, 0.98);
-            box-shadow: 0 2px 15px rgba(0, 0, 0, 0.05);
-            backdrop-filter: blur(10px);
+
+        .container {
+            width: 90%;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 15px;
         }
-        
-        .navbar.scrolled {
-            padding: 12px 0;
-            box-shadow: 0 5px 20px rgba(0, 0, 0, 0.1);
+
+        /* Header Styles */
+        header {
+            background: linear-gradient(135deg, var(--primary), #1a6fc4);
+            color: white;
+            padding: 1rem 0;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+            position: sticky;
+            top: 0;
+            z-index: 1000;
         }
-        
-        .navbar-brand {
-            font-weight: 700;
-            color: var(--primary-color);
+
+        .header-content {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .logo {
             display: flex;
             align-items: center;
-            font-size: 1.2rem;
+            gap: 15px;
         }
-        
-        .navbar-brand img {
-            height: 42px;
-            margin-right: 12px;
+
+        .logo img {
+            height: 60px;
         }
-        
-        .nav-link {
+
+        .logo-text h1 {
+            font-size: 1.5rem;
+            margin-bottom: 5px;
+        }
+
+        .logo-text p {
+            font-size: 0.9rem;
+            opacity: 0.9;
+        }
+
+        nav ul {
+            display: flex;
+            list-style: none;
+        }
+
+        nav ul li {
+            margin-left: 25px;
+        }
+
+        nav ul li a {
+            color: white;
+            text-decoration: none;
             font-weight: 500;
-            color: var(--dark-color);
-            margin: 0 12px;
+            transition: color 0.3s;
+            padding: 5px 0;
             position: relative;
-            transition: all var(--transition-speed) ease;
         }
-        
-        .nav-link:hover, .nav-link.active {
-            color: var(--primary-color);
+
+        nav ul li a:hover {
+            color: var(--secondary);
         }
-        
-        .nav-link::after {
+
+        nav ul li a::after {
             content: '';
             position: absolute;
             width: 0;
-            height: 3px;
-            bottom: -5px;
+            height: 2px;
+            bottom: 0;
             left: 0;
-            background-color: var(--secondary-color);
-            transition: width var(--transition-speed) ease;
-            border-radius: 2px;
+            background-color: var(--secondary);
+            transition: width 0.3s;
         }
-        
-        .nav-link:hover::after, .nav-link.active::after {
+
+        nav ul li a:hover::after {
             width: 100%;
         }
-        
-        .btn-primary {
-            background-color: var(--primary-color);
-            border-color: var(--primary-color);
-            padding: 10px 24px;
-            font-weight: 600;
-            transition: all var(--transition-speed) ease;
-            border-radius: var(--border-radius);
-            letter-spacing: 0.5px;
+
+        .mobile-menu {
+            display: none;
+            font-size: 1.5rem;
+            cursor: pointer;
         }
-        
-        .btn-primary:hover {
-            background-color: var(--primary-light);
-            border-color: var(--primary-light);
-            transform: translateY(-3px);
-            box-shadow: 0 8px 20px rgba(26, 62, 114, 0.3);
-        }
-        
-        .btn-outline-primary {
-            color: var(--primary-color);
-            border-color: var(--primary-color);
-            font-weight: 600;
-            transition: all var(--transition-speed) ease;
-            border-radius: var(--border-radius);
-            padding: 10px 24px;
-        }
-        
-        .btn-outline-primary:hover {
-            background-color: var(--primary-color);
-            border-color: var(--primary-color);
-            transform: translateY(-3px);
-            box-shadow: 0 8px 20px rgba(26, 62, 114, 0.2);
-        }
-        
+
         /* Hero Section */
-        .hero-section {
-            background: linear-gradient(135deg, rgba(26, 62, 114, 0.95), rgba(40, 82, 152, 0.95)), 
-                        url('images/office-bg.jpg') no-repeat center center;
+        .hero {
+            background: linear-gradient(rgba(13, 79, 139, 0.8), rgba(13, 79, 139, 0.9)), url('https://images.unsplash.com/photo-1523050854058-8df90110c9f1?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1470&q=80');
             background-size: cover;
+            background-position: center;
             color: white;
-            padding: 140px 0 120px;
-            position: relative;
-            overflow: hidden;
-        }
-        
-        .hero-section::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: radial-gradient(circle at 20% 50%, rgba(232, 176, 19, 0.15), transparent 70%);
-        }
-        
-        .hero-content {
-            position: relative;
-            z-index: 1;
-        }
-        
-        .hero-title {
-            font-size: 3.2rem;
-            font-weight: 800;
-            margin-bottom: 24px;
-            line-height: 1.2;
-            text-shadow: 0 2px 4px rgba(0, 0, 0, 0.15);
-        }
-        
-        .hero-subtitle {
-            font-size: 1.25rem;
-            margin-bottom: 32px;
-            opacity: 0.92;
-            max-width: 600px;
-        }
-        
-        .hero-buttons .btn {
-            margin-right: 16px;
-            margin-bottom: 16px;
-            min-width: 160px;
+            padding: 100px 0;
             text-align: center;
         }
-        
-        .hero-image {
-            position: relative;
-            animation: float 6s ease-in-out infinite;
-            perspective: 1000px;
-        }
-        
-        .hero-image img {
-            max-width: 100%;
-            border-radius: var(--border-radius);
-            box-shadow: var(--box-shadow);
-            transform-style: preserve-3d;
-            transform: rotateY(-5deg) rotateX(2deg);
-            border: 1px solid rgba(255, 255, 255, 0.1);
-        }
-        
-        .hero-badge {
-            position: absolute;
-            top: -15px;
-            right: -15px;
-            background: var(--secondary-color);
-            color: #000;
-            padding: 10px 15px;
-            border-radius: 50px;
-            font-weight: 700;
-            font-size: 0.9rem;
-            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
-            z-index: 2;
-            animation: pulse 2s infinite;
-        }
-        
-        @keyframes float {
-            0%, 100% { transform: translateY(0) rotateY(-5deg) rotateX(2deg); }
-            50% { transform: translateY(-20px) rotateY(-8deg) rotateX(4deg); }
-        }
-        
-        @keyframes pulse {
-            0% { transform: scale(1); }
-            50% { transform: scale(1.05); }
-            100% { transform: scale(1); }
-        }
-        
-        /* Features Section */
-        .features-section {
-            padding: var(--section-padding);
-            background-color: white;
-            position: relative;
-        }
-        
-        .section-title {
-            font-size: 2.6rem;
-            font-weight: 700;
-            color: var(--primary-color);
+
+        .hero h2 {
+            font-size: 2.5rem;
             margin-bottom: 20px;
+        }
+
+        .hero p {
+            font-size: 1.2rem;
+            max-width: 700px;
+            margin: 0 auto 30px;
+        }
+
+        .btn {
+            display: inline-block;
+            background-color: var(--secondary);
+            color: var(--dark);
+            padding: 12px 30px;
+            border-radius: 5px;
+            text-decoration: none;
+            font-weight: 600;
+            transition: all 0.3s;
+            border: none;
+            cursor: pointer;
+        }
+
+        .btn:hover {
+            background-color: #e6b800;
+            transform: translateY(-3px);
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+        }
+
+        /* Section Styles */
+        section {
+            padding: 80px 0;
+        }
+
+        .section-title {
+            text-align: center;
+            margin-bottom: 50px;
+        }
+
+        .section-title h2 {
+            font-size: 2.2rem;
+            color: var(--primary);
+            margin-bottom: 15px;
             position: relative;
             display: inline-block;
         }
-        
-        .section-title::after {
+
+        .section-title h2::after {
             content: '';
             position: absolute;
-            width: 60%;
-            height: 5px;
-            bottom: -12px;
-            left: 0;
-            background: linear-gradient(to right, var(--primary-color), var(--secondary-color));
-            border-radius: 3px;
+            width: 70px;
+            height: 3px;
+            background-color: var(--secondary);
+            bottom: -10px;
+            left: 50%;
+            transform: translateX(-50%);
         }
-        
-        .section-subtitle {
-            font-size: 1.15rem;
-            color: #6c757d;
-            margin-bottom: 60px;
-            max-width: 750px;
-            text-align: center;
-            margin-left: auto;
-            margin-right: auto;
+
+        .section-title p {
+            color: #666;
+            max-width: 700px;
+            margin: 0 auto;
         }
-        
-        .feature-card {
-            background-color: white;
-            border-radius: var(--border-radius);
-            padding: 32px;
-            margin-bottom: 30px;
-            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
-            transition: all var(--transition-speed) ease;
-            height: 100%;
-            border: 1px solid rgba(0, 0, 0, 0.05);
-            position: relative;
+
+        /* About Section */
+        .about-content {
+            display: flex;
+            align-items: center;
+            gap: 40px;
+        }
+
+        .about-text {
+            flex: 1;
+        }
+
+        .about-text h3 {
+            font-size: 1.8rem;
+            margin-bottom: 20px;
+            color: var(--primary);
+        }
+
+        .about-image {
+            flex: 1;
+            border-radius: 10px;
             overflow: hidden;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
         }
-        
-        .feature-card::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 4px;
-            height: 0;
-            background: linear-gradient(to bottom, var(--primary-color), var(--secondary-color));
-            transition: all var(--transition-speed) ease;
+
+        .about-image img {
+            width: 100%;
+            height: auto;
+            display: block;
         }
-        
-        .feature-card:hover {
+
+        /* Graduates Section */
+        .graduates-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+            gap: 30px;
+        }
+
+        .graduate-card {
+            background-color: white;
+            border-radius: 10px;
+            overflow: hidden;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
+            transition: transform 0.3s, box-shadow 0.3s;
+            text-align: center;
+        }
+
+        .graduate-card:hover {
             transform: translateY(-10px);
-            box-shadow: var(--box-shadow);
-            border-color: rgba(26, 62, 114, 0.1);
+            box-shadow: 0 15px 30px rgba(0, 0, 0, 0.1);
         }
-        
-        .feature-card:hover::before {
-            height: 100%;
-        }
-        
-        .feature-icon {
-            width: 75px;
-            height: 75px;
-            background: linear-gradient(135deg, var(--primary-color), var(--primary-light));
-            color: white;
-            border-radius: 18px;
+
+        .graduate-img {
+            height: 200px;
+            background-color: #e9ecef;
             display: flex;
             align-items: center;
             justify-content: center;
-            font-size: 1.9rem;
-            margin-bottom: 25px;
-            box-shadow: 0 8px 20px rgba(26, 62, 114, 0.2);
-            transition: all var(--transition-speed) ease;
+            color: #6c757d;
+            font-size: 4rem;
         }
-        
-        .feature-card:hover .feature-icon {
-            transform: rotate(5deg) scale(1.1);
-            background: linear-gradient(135deg, var(--secondary-color), var(--secondary-dark));
+
+        .graduate-info {
+            padding: 20px;
         }
-        
-        .feature-title {
-            font-size: 1.35rem;
-            font-weight: 600;
-            margin-bottom: 18px;
-            color: var(--primary-color);
-            transition: all var(--transition-speed) ease;
+
+        .graduate-info h3 {
+            margin-bottom: 5px;
+            color: var(--primary);
         }
-        
-        .feature-card:hover .feature-title {
-            color: var(--secondary-color);
-        }
-        
-        /* Stats Section */
-        .stats-section {
-            padding: var(--section-padding);
-            background: linear-gradient(135deg, var(--primary-color), var(--primary-light));
-            color: white;
-            position: relative;
-            overflow: hidden;
-        }
-        
-        .stats-section::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: url('images/dots-pattern.png') repeat;
-            opacity: 0.1;
-        }
-        
-        .stats-section::after {
-            content: '';
-            position: absolute;
-            bottom: -50px;
-            right: -50px;
-            width: 200px;
-            height: 200px;
-            background: radial-gradient(circle, rgba(232, 176, 19, 0.1), transparent 70%);
-        }
-        
-        .stat-item {
-            text-align: center;
-            padding: 25px;
-            position: relative;
-            z-index: 1;
-        }
-        
-        .stat-number {
-            font-size: 3.2rem;
-            font-weight: 800;
-            margin-bottom: 12px;
-            color: var(--secondary-color);
-            font-family: 'Arial', sans-serif;
-        }
-        
-        .stat-label {
-            font-size: 1.15rem;
-            opacity: 0.92;
-            font-weight: 500;
-        }
-        
-        /* CTA Section */
-        .cta-section {
-            padding: var(--section-padding);
-            background: linear-gradient(135deg, rgba(26, 62, 114, 0.95), rgba(40, 82, 152, 0.95)), 
-                        url('images/cta-bg.jpg') no-repeat center center;
-            background-size: cover;
-            color: white;
-            text-align: center;
-            position: relative;
-        }
-        
-        .cta-section::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background-color: rgba(0, 0, 0, 0.3);
-        }
-        
-        .cta-content {
-            position: relative;
-            z-index: 1;
-        }
-        
-        .cta-title {
-            font-size: 2.6rem;
-            font-weight: 700;
-            margin-bottom: 25px;
-            text-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-        }
-        
-        .cta-text {
-            font-size: 1.15rem;
-            margin-bottom: 35px;
-            max-width: 700px;
-            margin-left: auto;
-            margin-right: auto;
-            opacity: 0.92;
-        }
-        
-        .cta-buttons .btn {
-            margin: 0 10px 15px;
-            min-width: 180px;
-        }
-        
-        /* Footer */
-        .footer {
-            background: linear-gradient(135deg, #142f57, var(--primary-color));
-            color: white;
-            padding: 80px 0 30px;
-            position: relative;
-        }
-        
-        .footer::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 10px;
-            background: linear-gradient(to right, var(--secondary-color), var(--accent-color));
-        }
-        
-        .footer-logo {
-            margin-bottom: 25px;
-            display: flex;
-            align-items: center;
-        }
-        
-        .footer-logo img {
-            height: 55px;
-            margin-right: 15px;
-        }
-        
-        .footer-logo-text {
-            font-size: 1.3rem;
-            font-weight: 700;
-            color: white;
-        }
-        
-        .footer-about {
-            margin-bottom: 25px;
-            opacity: 0.9;
-        }
-        
-        .footer-title {
-            font-size: 1.25rem;
-            font-weight: 600;
-            margin-bottom: 25px;
-            color: var(--secondary-color);
-            position: relative;
-            display: inline-block;
-        }
-        
-        .footer-title::after {
-            content: '';
-            position: absolute;
-            width: 40px;
-            height: 3px;
-            bottom: -8px;
-            left: 0;
-            background-color: var(--secondary-color);
-            border-radius: 2px;
-        }
-        
-        .footer-links ul {
-            list-style: none;
-            padding: 0;
-        }
-        
-        .footer-links li {
-            margin-bottom: 12px;
-        }
-        
-        .footer-links a {
-            color: rgba(255, 255, 255, 0.85);
-            text-decoration: none;
-            transition: all var(--transition-speed) ease;
-            display: inline-block;
-        }
-        
-        .footer-links a:hover {
-            color: white;
-            padding-left: 8px;
-        }
-        
-        .footer-contact p {
+
+        .graduate-info p {
+            color: #666;
             margin-bottom: 15px;
-            display: flex;
-            align-items: flex-start;
-            opacity: 0.9;
         }
-        
-        .footer-contact i {
-            margin-right: 12px;
-            color: var(--secondary-color);
-            margin-top: 5px;
-            font-size: 1.1rem;
-        }
-        
+
         .social-links {
             display: flex;
-            margin-top: 20px;
+            justify-content: center;
+            gap: 10px;
         }
-        
+
         .social-links a {
-            display: inline-flex;
+            display: flex;
             align-items: center;
             justify-content: center;
-            width: 42px;
-            height: 42px;
-            background-color: rgba(255, 255, 255, 0.1);
+            width: 35px;
+            height: 35px;
+            background-color: #f1f1f1;
+            border-radius: 50%;
+            color: var(--primary);
+            transition: all 0.3s;
+        }
+
+        .social-links a:hover {
+            background-color: var(--primary);
+            color: white;
+        }
+
+        /* Events Section */
+        .events-timeline {
+            max-width: 800px;
+            margin: 0 auto;
+            position: relative;
+        }
+
+        .events-timeline::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            bottom: 0;
+            left: 50%;
+            width: 2px;
+            background-color: var(--primary);
+            transform: translateX(-50%);
+        }
+
+        .timeline-item {
+            margin-bottom: 40px;
+            position: relative;
+            width: 50%;
+            padding: 0 40px;
+        }
+
+        .timeline-item:nth-child(odd) {
+            left: 0;
+        }
+
+        .timeline-item:nth-child(even) {
+            left: 50%;
+        }
+
+        .timeline-content {
+            background-color: white;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
+            position: relative;
+        }
+
+        .timeline-content::after {
+            content: '';
+            position: absolute;
+            width: 20px;
+            height: 20px;
+            background-color: white;
+            top: 20px;
+            transform: rotate(45deg);
+        }
+
+        .timeline-item:nth-child(odd) .timeline-content::after {
+            right: -10px;
+        }
+
+        .timeline-item:nth-child(even) .timeline-content::after {
+            left: -10px;
+        }
+
+        .timeline-date {
+            display: inline-block;
+            background-color: var(--primary);
+            color: white;
+            padding: 5px 15px;
+            border-radius: 20px;
+            font-size: 0.9rem;
+            margin-bottom: 10px;
+        }
+
+        .timeline-content h3 {
+            margin-bottom: 10px;
+            color: var(--primary);
+        }
+
+        /* Gallery Section */
+        .gallery-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+            gap: 15px;
+        }
+
+        .gallery-item {
+            height: 200px;
+            border-radius: 10px;
+            overflow: hidden;
+            position: relative;
+            cursor: pointer;
+        }
+
+        .gallery-item img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transition: transform 0.5s;
+        }
+
+        .gallery-item:hover img {
+            transform: scale(1.1);
+        }
+
+        .gallery-overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(13, 79, 139, 0.7);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            opacity: 0;
+            transition: opacity 0.3s;
+        }
+
+        .gallery-item:hover .gallery-overlay {
+            opacity: 1;
+        }
+
+        .gallery-overlay i {
+            color: white;
+            font-size: 2rem;
+        }
+
+        /* Contact Section */
+        .contact-content {
+            display: flex;
+            gap: 40px;
+        }
+
+        .contact-info {
+            flex: 1;
+        }
+
+        .contact-form {
+            flex: 1;
+        }
+
+        .contact-item {
+            display: flex;
+            align-items: flex-start;
+            margin-bottom: 25px;
+        }
+
+        .contact-icon {
+            width: 50px;
+            height: 50px;
+            background-color: var(--primary);
             color: white;
             border-radius: 50%;
-            margin-right: 12px;
-            transition: all var(--transition-speed) ease;
-            font-size: 1.1rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-right: 15px;
+            flex-shrink: 0;
         }
-        
-        .social-links a:hover {
-            background-color: var(--secondary-color);
-            transform: translateY(-3px);
-            color: #000;
+
+        .contact-details h3 {
+            margin-bottom: 5px;
+            color: var(--primary);
         }
-        
-        .footer-bottom {
-            border-top: 1px solid rgba(255, 255, 255, 0.1);
-            padding-top: 25px;
-            margin-top: 50px;
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 500;
+        }
+
+        .form-control {
+            width: 100%;
+            padding: 12px 15px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            font-size: 1rem;
+            transition: border 0.3s;
+        }
+
+        .form-control:focus {
+            border-color: var(--primary);
+            outline: none;
+        }
+
+        textarea.form-control {
+            min-height: 150px;
+            resize: vertical;
+        }
+
+        /* Footer */
+        footer {
+            background-color: var(--dark);
+            color: white;
+            padding: 60px 0 20px;
+        }
+
+        .footer-content {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 40px;
+        }
+
+        .footer-column {
+            flex: 1;
+            padding: 0 15px;
+        }
+
+        .footer-column h3 {
+            font-size: 1.2rem;
+            margin-bottom: 20px;
+            color: var(--secondary);
+        }
+
+        .footer-links {
+            list-style: none;
+        }
+
+        .footer-links li {
+            margin-bottom: 10px;
+        }
+
+        .footer-links a {
+            color: #adb5bd;
+            text-decoration: none;
+            transition: color 0.3s;
+        }
+
+        .footer-links a:hover {
+            color: var(--secondary);
+        }
+
+        .copyright {
             text-align: center;
-            font-size: 0.95rem;
-            opacity: 0.8;
+            padding-top: 20px;
+            border-top: 1px solid #495057;
+            color: #adb5bd;
+            font-size: 0.9rem;
         }
-        
-        /* Animations */
-        .animate-on-scroll {
-            opacity: 0;
-            transform: translateY(30px);
-            transition: all 0.8s ease;
-        }
-        
-        .animate-on-scroll.animated {
-            opacity: 1;
-            transform: translateY(0);
-        }
-        
-        .delay-1 { transition-delay: 0.2s; }
-        .delay-2 { transition-delay: 0.4s; }
-        .delay-3 { transition-delay: 0.6s; }
-        
+
         /* Back to Top Button */
         .back-to-top {
             position: fixed;
@@ -572,503 +534,505 @@ $research_stats = $stmt->fetch();
             right: 30px;
             width: 50px;
             height: 50px;
-            background-color: var(--secondary-color);
-            color: #000;
+            background-color: var(--primary);
+            color: white;
             border-radius: 50%;
             display: flex;
             align-items: center;
             justify-content: center;
             font-size: 1.2rem;
-            box-shadow: 0 5px 20px rgba(0, 0, 0, 0.2);
-            z-index: 99;
+            cursor: pointer;
             opacity: 0;
             visibility: hidden;
-            transition: all var(--transition-speed) ease;
+            transition: all 0.3s;
+            z-index: 999;
         }
-        
+
         .back-to-top.active {
             opacity: 1;
             visibility: visible;
         }
-        
-        .back-to-top:hover {
-            background-color: var(--primary-color);
-            color: white;
-            transform: translateY(-5px);
-        }
-        
-        /* Responsive */
-        @media (max-width: 1199px) {
-            .hero-title {
-                font-size: 2.8rem;
-            }
-        }
-        
+
+        /* Responsive Styles */
         @media (max-width: 992px) {
-            .hero-title {
-                font-size: 2.5rem;
+            .about-content {
+                flex-direction: column;
             }
-            
-            .section-title {
-                font-size: 2.2rem;
+
+            .contact-content {
+                flex-direction: column;
             }
-            
-            .feature-card {
-                padding: 25px;
+
+            .footer-content {
+                flex-wrap: wrap;
+            }
+
+            .footer-column {
+                flex: 0 0 50%;
+                margin-bottom: 30px;
             }
         }
-        
+
         @media (max-width: 768px) {
-            :root {
-                --section-padding: 70px 0;
+            nav ul {
+                display: none;
+                position: absolute;
+                top: 100%;
+                left: 0;
+                right: 0;
+                background-color: var(--primary);
+                flex-direction: column;
+                padding: 20px;
+                box-shadow: 0 5px 10px rgba(0, 0, 0, 0.1);
             }
-            
-            .hero-section {
-                padding: 120px 0 80px;
-                text-align: center;
+
+            nav ul.active {
+                display: flex;
             }
-            
-            .hero-title {
-                font-size: 2.2rem;
+
+            nav ul li {
+                margin: 10px 0;
             }
-            
-            .hero-subtitle {
-                font-size: 1.1rem;
-                margin-left: auto;
-                margin-right: auto;
+
+            .mobile-menu {
+                display: block;
             }
-            
-            .hero-buttons {
-                justify-content: center;
+
+            .events-timeline::before {
+                left: 30px;
             }
-            
-            .hero-image {
-                margin-top: 50px;
+
+            .timeline-item {
+                width: 100%;
+                left: 0 !important;
+                padding-left: 70px;
+                padding-right: 0;
             }
-            
-            .section-title {
+
+            .timeline-content::after {
+                left: -10px !important;
+            }
+
+            .hero h2 {
                 font-size: 2rem;
             }
-            
-            .section-subtitle {
-                font-size: 1.05rem;
-                margin-bottom: 40px;
-            }
-            
-            .stat-number {
-                font-size: 2.8rem;
-            }
-            
-            .cta-title {
-                font-size: 2.2rem;
-            }
-            
-            .footer {
-                padding: 60px 0 25px;
-                text-align: center;
-            }
-            
-            .footer-logo {
-                justify-content: center;
-            }
-            
-            .footer-about {
-                margin-left: auto;
-                margin-right: auto;
-                max-width: 500px;
-            }
-            
-            .footer-title::after {
-                left: 50%;
-                transform: translateX(-50%);
-            }
-            
-            .social-links {
-                justify-content: center;
+
+            .hero p {
+                font-size: 1rem;
             }
         }
-        
+
         @media (max-width: 576px) {
-            .hero-title {
-                font-size: 2rem;
+            .footer-column {
+                flex: 0 0 100%;
             }
-            
-            .hero-buttons .btn {
-                width: 100%;
-                margin-right: 0;
+
+            .graduates-grid {
+                grid-template-columns: 1fr;
             }
-            
-            .section-title {
-                font-size: 1.8rem;
-            }
-            
-            .feature-card {
-                padding: 20px;
-            }
-            
-            .feature-icon {
-                width: 65px;
-                height: 65px;
-                font-size: 1.6rem;
-            }
-            
-            .stat-item {
-                padding: 15px;
-            }
-            
-            .stat-number {
-                font-size: 2.5rem;
-            }
-            
-            .cta-title {
-                font-size: 1.8rem;
-            }
-            
-            .cta-buttons .btn {
-                width: 100%;
-                margin: 0 0 15px 0;
+
+            .gallery-grid {
+                grid-template-columns: 1fr;
             }
         }
     </style>
 </head>
 <body>
-    <!-- Navigation -->
-    <nav class="navbar navbar-expand-lg navbar-light fixed-top">
+    <!-- Header -->
+    <header>
         <div class="container">
-            <a class="navbar-brand" href="#">
-                <img src="logo/MSU_Sulu_Logo.png" alt="MSU-SULU Logo" loading="lazy">
-                <span>Office of the Director for Research</span>
-            </a>
-            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
-                <span class="navbar-toggler-icon"></span>
-            </button>
-            <div class="collapse navbar-collapse" id="navbarNav">
-                <ul class="navbar-nav ms-auto">
-                    <li class="nav-item">
-                        <a class="nav-link active" href="#home">Home</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="#features">Features</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="#contact">Contact</a>
-                    </li>
-                    <li class="nav-item ms-lg-3 my-2 my-lg-0">
-                        <a href="login.php" class="btn btn-primary">Login <i class="fas fa-arrow-right ms-2"></i></a>
-                    </li>
-                </ul>
+            <div class="header-content">
+                <div class="logo">
+                    <div class="logo-img">
+                        <i class="fas fa-graduation-cap" style="font-size: 2.5rem;"></i>
+                    </div>
+                    <div class="logo-text">
+                        <h1>MSU-SULU BSCS</h1>
+                        <p>Batch 2025 Graduates</p>
+                    </div>
+                </div>
+                <nav>
+                    <div class="mobile-menu">
+                        <i class="fas fa-bars"></i>
+                    </div>
+                    <ul>
+                        <li><a href="#home">Home</a></li>
+                        <li><a href="#about">About</a></li>
+                        <li><a href="#graduates">Graduates</a></li>
+                        <li><a href="#events">Events</a></li>
+                        <li><a href="#gallery">Gallery</a></li>
+                        <li><a href="#contact">Contact</a></li>
+                    </ul>
+                </nav>
             </div>
         </div>
-    </nav>
+    </header>
 
     <!-- Hero Section -->
-    <section class="hero-section" id="home">
+    <section class="hero" id="home">
         <div class="container">
-            <div class="row align-items-center">
-                <div class="col-lg-6">
-                    <div class="hero-content">
-                        <h1 class="hero-title animate-on-scroll">Automated Research Management System</h1>
-                        <p class="hero-subtitle animate-on-scroll delay-1">The comprehensive solution for managing, tracking, analyzing, and reporting research activities across MSU-SULU colleges departments.</p>
-                        <div class="hero-buttons animate-on-scroll delay-2">
-                            <a href="login.php" class="btn btn-primary">Get Started</a>
-                            <a href="#features" class="btn btn-outline-light">Learn More</a>
-                        </div>
-                    </div>
+            <h2>Congratulations Class of 2025!</h2>
+            <p>We are proud to present the graduates of Bachelor of Science in Computer Science from Mindanao State University - Sulu. Your journey begins here.</p>
+            <a href="#graduates" class="btn">Meet Our Graduates</a>
+        </div>
+    </section>
+
+    <!-- About Section -->
+    <section id="about">
+        <div class="container">
+            <div class="section-title">
+                <h2>About Our Batch</h2>
+                <p>Learn more about the BSCS Batch 2025 and our journey at MSU-Sulu</p>
+            </div>
+            <div class="about-content">
+                <div class="about-text">
+                    <h3>Our Journey at MSU-Sulu</h3>
+                    <p>The Bachelor of Science in Computer Science Batch 2025 of Mindanao State University - Sulu represents a diverse group of talented individuals who have successfully completed their four-year academic journey.</p>
+                    <p>Throughout our time at MSU-Sulu, we have developed strong technical skills in programming, software development, database management, and computer systems. Our curriculum has prepared us to tackle real-world challenges in the ever-evolving field of technology.</p>
+                    <p>We are grateful to our dedicated faculty members, supportive families, and the MSU-Sulu administration for guiding us through this transformative educational experience.</p>
+                    <a href="#contact" class="btn">Get In Touch</a>
                 </div>
-                <div class="col-lg-6">
-                    <div class="hero-image animate-on-scroll delay-3">
-                        <span class="hero-badge">Welcome</span>
-                        <img src="images/preview.png" alt="Preview" class="img-fluid" loading="lazy">
+                <div class="about-image">
+                    <div style="background-color: #e9ecef; height: 100%; display: flex; align-items: center; justify-content: center; color: #6c757d;">
+                        <i class="fas fa-university" style="font-size: 8rem;"></i>
                     </div>
                 </div>
             </div>
         </div>
     </section>
 
-    <!-- Features Section -->
-    <section class="features-section" id="features">
+    <!-- Graduates Section -->
+    <section id="graduates" style="background-color: var(--light);">
         <div class="container">
-            <div class="text-center mb-5">
-                <h2 class="section-title animate-on-scroll">Powerful Features</h2>
-                <p class="section-subtitle animate-on-scroll delay-1">Designed to simplify research management and enhance productivity</p>
+            <div class="section-title">
+                <h2>Our Graduates</h2>
+                <p>Meet the talented individuals of BSCS Batch 2025</p>
             </div>
-            
-            <div class="row g-4">
-                <div class="col-md-6 col-lg-4">
-                    <div class="feature-card animate-on-scroll">
-                        <div class="feature-icon">
-                            <i class="fas fa-chart-line"></i>
+            <div class="graduates-grid">
+                <!-- Graduate 1 -->
+                <div class="graduate-card">
+                    <div class="graduate-img">
+                        <i class="fas fa-user-graduate"></i>
+                    </div>
+                    <div class="graduate-info">
+                        <h3>Ahmed S. Hassan</h3>
+                        <p>Web Developer</p>
+                        <div class="social-links">
+                            <a href="#"><i class="fab fa-facebook-f"></i></a>
+                            <a href="#"><i class="fab fa-twitter"></i></a>
+                            <a href="#"><i class="fab fa-linkedin-in"></i></a>
                         </div>
-                        <h3 class="feature-title">Comprehensive Analytics</h3>
-                        <p>Gain insights with real-time analytics and visualizations of research output across all departments and colleges.</p>
                     </div>
                 </div>
-                
-                <div class="col-md-6 col-lg-4">
-                    <div class="feature-card animate-on-scroll delay-1">
-                        <div class="feature-icon">
-                            <i class="fas fa-search"></i>
+                <!-- Graduate 2 -->
+                <div class="graduate-card">
+                    <div class="graduate-img">
+                        <i class="fas fa-user-graduate"></i>
+                    </div>
+                    <div class="graduate-info">
+                        <h3>Fatima A. Jikiri</h3>
+                        <p>Software Engineer</p>
+                        <div class="social-links">
+                            <a href="#"><i class="fab fa-facebook-f"></i></a>
+                            <a href="#"><i class="fab fa-twitter"></i></a>
+                            <a href="#"><i class="fab fa-linkedin-in"></i></a>
                         </div>
-                        <h3 class="feature-title">Scopus Integration</h3>
-                        <p>Track Scopus-indexed publications and generate reports to showcase your institution's research impact.</p>
                     </div>
                 </div>
-                
-                <div class="col-md-6 col-lg-4">
-                    <div class="feature-card animate-on-scroll delay-2">
-                        <div class="feature-icon">
-                            <i class="fas fa-file-alt"></i>
+              <!-- Graduate 3 -->
+                <div class="graduate-card">
+                    <div class="graduate-img">
+                        <i class="fas fa-user-graduate"></i>
+                    </div>
+                    <div class="graduate-info">
+                        <h3>Ibrahim M. Usman</h3>
+                        <p>Data Analyst</p>
+                        <div class="social-links">
+                            <a href="#"><i class="fab fa-facebook-f"></i></a>
+                            <a href="#"><i class="fab fa-twitter"></i></a>
+                            <a href="#"><i class="fab fa-linkedin-in"></i></a>
                         </div>
-                        <h3 class="feature-title">Document Management</h3>
-                        <p>Securely store and manage research documents, certificates, and publication proofs in one centralized location.</p>
                     </div>
                 </div>
-                
-                <div class="col-md-6 col-lg-4">
-                    <div class="feature-card animate-on-scroll">
-                        <div class="feature-icon">
-                            <i class="fas fa-tasks"></i>
+                <!-- Graduate 4 -->
+                <div class="graduate-card">
+                    <div class="graduate-img">
+                        <i class="fas fa-user-graduate"></i>
+                    </div>
+                    <div class="graduate-info">
+                        <h3>Nurhaya S. Abubakar</h3>
+                        <p>UI/UX Designer</p>
+                        <div class="social-links">
+                            <a href="#"><i class="fab fa-facebook-f"></i></a>
+                            <a href="#"><i class="fab fa-twitter"></i></a>
+                            <a href="#"><i class="fab fa-linkedin-in"></i></a>
                         </div>
-                        <h3 class="feature-title">Progress Tracking</h3>
-                        <p>Monitor research progress from submission to publication with customizable status updates.</p>
-                    </div>
-                </div>
-                
-                <div class="col-md-6 col-lg-4">
-                    <div class="feature-card animate-on-scroll delay-1">
-                        <div class="feature-icon">
-                            <i class="fas fa-download"></i>
-                        </div>
-                        <h3 class="feature-title">Automated Reports</h3>
-                        <p>Generate comprehensive reports for accreditation, funding applications, and institutional assessments.</p>
-                    </div>
-                </div>
-                
-                <div class="col-md-6 col-lg-4">
-                    <div class="feature-card animate-on-scroll delay-2">
-                        <div class="feature-icon">
-                            <i class="fas fa-user-shield"></i>
-                        </div>
-                        <h3 class="feature-title">User Authentication</h3>
-                        <p>Secure role-based access control to ensure proper authorization levels.</p>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </section>
-
-    <!-- Stats Section -->
-    <section class="stats-section">
-        <div class="container">
-            <div class="row">
-                <div class="col-6 col-md-3">
-                    <div class="stat-item animate-on-scroll">
-                        <div class="stat-number" data-count="<?php echo $research_stats['total_research']; ?>">0</div>
-                        <div class="stat-label">Research Projects</div>
-                    </div>
-                </div>
-                <div class="col-6 col-md-3">
-                    <div class="stat-item animate-on-scroll delay-1">
-                        <div class="stat-number" data-count="<?php echo $research_stats['scopus']; ?>">0</div>
-                        <div class="stat-label">Scopus Publications</div>
-                    </div>
-                </div>
-                <div class="col-6 col-md-3">
-                    <div class="stat-item animate-on-scroll delay-2">
-                        <div class="stat-number" data-count="<?php echo $research_stats['published']; ?>">0</div>
-                        <div class="stat-label">Published Works</div>
-                    </div>
-                </div>
-                <div class="col-6 col-md-3">
-                    <div class="stat-item animate-on-scroll delay-3">
-                        <div class="stat-number" data-count="<?php echo $research_stats['certificates']; ?>">0</div>
-                        <div class="stat-label">Certified Research</div>
                     </div>
                 </div>
             </div>
         </div>
     </section>
 
-    <!-- CTA Section -->
-    <section class="cta-section">
+    <!-- Events Section -->
+    <section id="events">
         <div class="container">
-            <div class="cta-content">
-                <h2 class="cta-title animate-on-scroll">Ready to Transform Your Research Management?</h2>
-                <p class="cta-text animate-on-scroll delay-1">Experience the power of streamlined research management and reporting.</p>
-                <div class="animate-on-scroll delay-2">
-                    <a href="login.php" class="btn btn-primary btn-lg me-3">Get Started Now</a>
-                    <a href="#contact" class="btn btn-outline-light btn-lg">Contact Us</a>
+            <div class="section-title">
+                <h2>Upcoming Events</h2>
+                <p>Important dates and activities for our graduates</p>
+            </div>
+            <div class="events-timeline">
+                <!-- Event 1 -->
+                <div class="timeline-item">
+                    <div class="timeline-content">
+                        <span class="timeline-date">June 15, 2025</span>
+                        <h3>Graduation Ceremony</h3>
+                        <p>Join us as we celebrate our official graduation ceremony at the MSU-Sulu Auditorium. All graduates, faculty, and family members are welcome.</p>
+                    </div>
+                </div>
+                <!-- Event 2 -->
+                <div class="timeline-item">
+                    <div class="timeline-content">
+                        <span class="timeline-date">June 20, 2025</span>
+                        <h3>Alumni Networking Event</h3>
+                        <p>Connect with fellow graduates and established alumni in the tech industry. This is a great opportunity for career networking and mentorship.</p>
+                    </div>
+                </div>
+                <!-- Event 3 -->
+                <div class="timeline-item">
+                    <div class="timeline-content">
+                        <span class="timeline-date">July 5, 2025</span>
+                        <h3>Job Fair</h3>
+                        <p>Participate in our exclusive job fair featuring top tech companies looking to hire fresh graduates from our program.</p>
+                    </div>
+                </div>
+                <!-- Event 4 -->
+                <div class="timeline-item">
+                    <div class="timeline-content">
+                        <span class="timeline-date">July 15, 2025</span>
+                        <h3>Batch Reunion</h3>
+                        <p>Let's celebrate our achievements together at our first batch reunion. Dinner and entertainment will be provided.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Gallery Section -->
+    <section id="gallery" style="background-color: var(--light);">
+        <div class="container">
+            <div class="section-title">
+                <h2>Gallery</h2>
+                <p>Memorable moments from our journey at MSU-Sulu</p>
+            </div>
+            <div class="gallery-grid">
+                <div class="gallery-item">
+                    <div style="background-color: #e9ecef; height: 100%; display: flex; align-items: center; justify-content: center; color: #6c757d;">
+                        <i class="fas fa-image" style="font-size: 3rem;"></i>
+                    </div>
+                    <div class="gallery-overlay">
+                        <i class="fas fa-search-plus"></i>
+                    </div>
+                </div>
+                <div class="gallery-item">
+                    <div style="background-color: #e9ecef; height: 100%; display: flex; align-items: center; justify-content: center; color: #6c757d;">
+                        <i class="fas fa-image" style="font-size: 3rem;"></i>
+                    </div>
+                    <div class="gallery-overlay">
+                        <i class="fas fa-search-plus"></i>
+                    </div>
+                </div>
+                <div class="gallery-item">
+                    <div style="background-color: #e9ecef; height: 100%; display: flex; align-items: center; justify-content: center; color: #6c757d;">
+                        <i class="fas fa-image" style="font-size: 3rem;"></i>
+                    </div>
+                    <div class="gallery-overlay">
+                        <i class="fas fa-search-plus"></i>
+                    </div>
+                </div>
+                <div class="gallery-item">
+                    <div style="background-color: #e9ecef; height: 100%; display: flex; align-items: center; justify-content: center; color: #6c757d;">
+                        <i class="fas fa-image" style="font-size: 3rem;"></i>
+                    </div>
+                    <div class="gallery-overlay">
+                        <i class="fas fa-search-plus"></i>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Contact Section -->
+    <section id="contact">
+        <div class="container">
+            <div class="section-title">
+                <h2>Contact Us</h2>
+                <p>Get in touch with the BSCS Batch 2025 representatives</p>
+            </div>
+            <div class="contact-content">
+                <div class="contact-info">
+                    <div class="contact-item">
+                        <div class="contact-icon">
+                            <i class="fas fa-map-marker-alt"></i>
+                        </div>
+                        <div class="contact-details">
+                            <h3>Location</h3>
+                            <p>Mindanao State University - Sulu<br>Jolo, Sulu, Philippines</p>
+                        </div>
+                    </div>
+                    <div class="contact-item">
+                        <div class="contact-icon">
+                            <i class="fas fa-envelope"></i>
+                        </div>
+                        <div class="contact-details">
+                            <h3>Email</h3>
+                            <p>bscs2025@msusulu.edu.ph</p>
+                        </div>
+                    </div>
+                    <div class="contact-item">
+                        <div class="contact-icon">
+                            <i class="fas fa-phone"></i>
+                        </div>
+                        <div class="contact-details">
+                            <h3>Phone</h3>
+                            <p>+63 912 345 6789</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="contact-form">
+                    <form id="contactForm">
+                        <div class="form-group">
+                            <label for="name">Your Name</label>
+                            <input type="text" id="name" class="form-control" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="email">Your Email</label>
+                            <input type="email" id="email" class="form-control" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="subject">Subject</label>
+                            <input type="text" id="subject" class="form-control" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="message">Message</label>
+                            <textarea id="message" class="form-control" required></textarea>
+                        </div>
+                        <button type="submit" class="btn">Send Message</button>
+                    </form>
                 </div>
             </div>
         </div>
     </section>
 
     <!-- Footer -->
-    <footer class="footer" id="contact">
+    <footer>
         <div class="container">
-            <div class="row">
-                <div class="col-lg-4 mb-5 mb-lg-0">
-                    <div class="footer-logo">
-                        <img src="logo/MSU_Sulu_Logo.png" alt="MSU-SULU Logo" loading="lazy">
-                        <span class="footer-logo-text">MSU-SULU Research Office</span>
-                    </div>
-                    <div class="footer-about">
-                        <p>The Automated Research Management System streamlines research tracking, analysis, and reporting for MSU-SULU Research Office.</p>
-                    </div>
-                    <div class="social-links">
-                        <a href="#" aria-label="Facebook"><i class="fab fa-facebook-f"></i></a>
-                        <a href="#" aria-label="Twitter"><i class="fab fa-twitter"></i></a>
-                        <a href="#" aria-label="LinkedIn"><i class="fab fa-linkedin-in"></i></a>
-                        <a href="#" aria-label="Instagram"><i class="fab fa-instagram"></i></a>
-                    </div>
+            <div class="footer-content">
+                <div class="footer-column">
+                    <h3>MSU-SULU BSCS 2025</h3>
+                    <p>Proud graduates of the Bachelor of Science in Computer Science program at Mindanao State University - Sulu.</p>
                 </div>
-                
-                <div class="col-lg-2 col-md-6 mb-5 mb-md-0">
-                    <h4 class="footer-title">Quick Links</h4>
-                    <div class="footer-links">
-                        <ul>
-                            <li><a href="#home">Home</a></li>
-                            <li><a href="#features">Features</a></li>
-                            <li><a href="login.php">Login</a></li>
-                        </ul>
-                    </div>
+                <div class="footer-column">
+                    <h3>Quick Links</h3>
+                    <ul class="footer-links">
+                        <li><a href="#home">Home</a></li>
+                        <li><a href="#about">About</a></li>
+                        <li><a href="#graduates">Graduates</a></li>
+                        <li><a href="#events">Events</a></li>
+                        <li><a href="#gallery">Gallery</a></li>
+                    </ul>
                 </div>
-                
-                <div class="col-lg-3 col-md-6 mb-5 mb-md-0">
-                    <h4 class="footer-title">Resources</h4>
-                    <div class="footer-links">
-                        <ul>
-                            <li><a href="#">User Guide</a></li>
-                            <li><a href="#">Support</a></li>
-                        </ul>
-                    </div>
-                </div>
-                
-                <div class="col-lg-3 col-md-6">
-                    <h4 class="footer-title">Contact Us</h4>
-                    <div class="footer-contact">
-                        <p><i class="fas fa-map-marker-alt"></i>Jolo, Sulu, Philippines</p>
-                        <p><i class="fas fa-phone"></i> +63 931 757 7901</p>
-                        <p><i class="fas fa-envelope"></i> kuzzello25@gmail.com</p>
-                        <p><i class="fas fa-clock"></i> Mon-Fri: 8:00 AM - 5:00 PM</p>
-                    </div>
+                <div class="footer-column">
+                    <h3>Connect With Us</h3>
+                    <ul class="footer-links">
+                        <li><a href="#"><i class="fab fa-facebook-f"></i> Facebook</a></li>
+                        <li><a href="#"><i class="fab fa-twitter"></i> Twitter</a></li>
+                        <li><a href="#"><i class="fab fa-instagram"></i> Instagram</a></li>
+                        <li><a href="#"><i class="fab fa-linkedin-in"></i> LinkedIn</a></li>
+                    </ul>
                 </div>
             </div>
-            
-            <div class="footer-bottom">
-                <p>&copy; 2025 MSU-SULU Automated Research Management System. All rights reserved.</p>
+            <div class="copyright">
+                <p>&copy; 2025 MSU-SULU BSCS Batch 2025. All Rights Reserved.</p>
             </div>
         </div>
     </footer>
 
     <!-- Back to Top Button -->
-    <a href="#" class="back-to-top"><i class="fas fa-arrow-up"></i></a>
+    <div class="back-to-top">
+        <i class="fas fa-chevron-up"></i>
+    </div>
 
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
     <script>
-        // Navbar scroll effect
-        window.addEventListener('scroll', function() {
-            const navbar = document.querySelector('.navbar');
-            const backToTop = document.querySelector('.back-to-top');
-            
-            if (window.scrollY > 50) {
-                navbar.classList.add('scrolled');
-            } else {
-                navbar.classList.remove('scrolled');
-            }
-            
-            if (window.scrollY > 300) {
-                backToTop.classList.add('active');
-            } else {
-                backToTop.classList.remove('active');
-            }
+        // Mobile Menu Toggle
+        document.querySelector('.mobile-menu').addEventListener('click', function() {
+            document.querySelector('nav ul').classList.toggle('active');
         });
-        
-        // Smooth scrolling for navigation links
-        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+
+        // Smooth Scrolling for Navigation Links
+        document.querySelectorAll('nav a').forEach(anchor => {
             anchor.addEventListener('click', function(e) {
                 e.preventDefault();
                 
                 const targetId = this.getAttribute('href');
-                if (targetId === '#') return;
-                
                 const targetElement = document.querySelector(targetId);
-                if (targetElement) {
-                    window.scrollTo({
-                        top: targetElement.offsetTop - 80,
-                        behavior: 'smooth'
-                    });
-                    
-                    // Update URL without refreshing
-                    if (history.pushState) {
-                        history.pushState(null, null, targetId);
-                    } else {
-                        location.hash = targetId;
-                    }
-                }
-            });
-        });
-        
-        // Animate stats counting
-        function animateStats() {
-            const statItems = document.querySelectorAll('.stat-item');
-            
-            statItems.forEach(item => {
-                const numberElement = item.querySelector('.stat-number');
-                const target = parseInt(numberElement.getAttribute('data-count'));
-                const duration = 2000; // Animation duration in ms
-                const step = target / (duration / 16); // 60fps
-                let current = 0;
                 
-                const counter = setInterval(() => {
-                    current += step;
-                    if (current >= target) {
-                        clearInterval(counter);
-                        current = target;
-                    }
-                    numberElement.textContent = Math.floor(current);
-                }, 16);
+                window.scrollTo({
+                    top: targetElement.offsetTop - 80,
+                    behavior: 'smooth'
+                });
+                
+                // Close mobile menu after clicking a link
+                document.querySelector('nav ul').classList.remove('active');
             });
-        }
+        });
+
+        // Back to Top Button
+        const backToTopButton = document.querySelector('.back-to-top');
         
-        // Intersection Observer for animations
-        const observer = new IntersectionObserver((entries) => {
-            entries.forEach(entry => {
-                if (entry.isIntersecting) {
-                    entry.target.classList.add('animated');
-                    
-                    // If it's the stats section, trigger counting
-                    if (entry.target.classList.contains('stats-section')) {
-                        animateStats();
-                    }
-                }
-            });
-        }, { threshold: 0.1 });
-        
-        // Observe all elements with animation classes
-        document.querySelectorAll('.animate-on-scroll').forEach(el => {
-            observer.observe(el);
+        window.addEventListener('scroll', function() {
+            if (window.pageYOffset > 300) {
+                backToTopButton.classList.add('active');
+            } else {
+                backToTopButton.classList.remove('active');
+            }
         });
         
-        // Observe sections
-        document.querySelectorAll('section').forEach(section => {
-            observer.observe(section);
-        });
-        
-        // Back to top button
-        document.querySelector('.back-to-top').addEventListener('click', function(e) {
-            e.preventDefault();
+        backToTopButton.addEventListener('click', function() {
             window.scrollTo({
                 top: 0,
                 behavior: 'smooth'
             });
         });
-        
-        // Force animate hero elements on load
-        document.addEventListener('DOMContentLoaded', function() {
-            document.querySelectorAll('.hero-section .animate-on-scroll').forEach(el => {
-                el.classList.add('animated');
+
+        // Contact Form Submission
+        document.getElementById('contactForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            alert('Thank you for your message! We will get back to you soon.');
+            this.reset();
+        });
+
+        // Simple Animation on Scroll
+        const observerOptions = {
+            root: null,
+            rootMargin: '0px',
+            threshold: 0.1
+        };
+
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.style.opacity = '1';
+                    entry.target.style.transform = 'translateY(0)';
+                }
             });
+        }, observerOptions);
+
+        // Observe elements for animation
+        document.querySelectorAll('.graduate-card, .timeline-item, .gallery-item').forEach(el => {
+            el.style.opacity = '0';
+            el.style.transform = 'translateY(20px)';
+            el.style.transition = 'opacity 0.5s ease, transform 0.5s ease';
+            observer.observe(el);
         });
     </script>
 </body>
