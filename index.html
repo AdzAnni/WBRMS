@@ -1,0 +1,659 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>BSCS Alumni Batch 2025 - Memories Gallery</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        :root {
+            --primary: #1a4b8c;
+            --secondary: #e63946;
+            --accent: #f4a261;
+            --light: #f8f9fa;
+            --dark: #212529;
+            --success: #2a9d8f;
+        }
+
+        body {
+            background-color: #f5f7fa;
+            color: var(--dark);
+            line-height: 1.6;
+        }
+
+        header {
+            background: linear-gradient(135deg, var(--primary), #0a2a5e);
+            color: white;
+            padding: 1.5rem 0;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+        }
+
+        .container {
+            width: 90%;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .header-content {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .logo i {
+            font-size: 2.5rem;
+            color: var(--accent);
+        }
+
+        .logo h1 {
+            font-size: 1.8rem;
+            font-weight: 700;
+        }
+
+        .logo p {
+            font-size: 1rem;
+            opacity: 0.9;
+        }
+
+        nav ul {
+            display: flex;
+            list-style: none;
+            gap: 25px;
+        }
+
+        nav a {
+            color: white;
+            text-decoration: none;
+            font-weight: 500;
+            transition: all 0.3s ease;
+            padding: 8px 12px;
+            border-radius: 4px;
+        }
+
+        nav a:hover, nav a.active {
+            background-color: rgba(255, 255, 255, 0.2);
+        }
+
+        .hero {
+            background: linear-gradient(rgba(0, 0, 0, 0.6), rgba(0, 0, 0, 0.6)), url('https://images.unsplash.com/photo-1523050854058-8df90110c9f1?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1470&q=80');
+            background-size: cover;
+            background-position: center;
+            color: white;
+            text-align: center;
+            padding: 5rem 2rem;
+            margin-bottom: 3rem;
+        }
+
+        .hero h2 {
+            font-size: 2.8rem;
+            margin-bottom: 1rem;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
+        }
+
+        .hero p {
+            font-size: 1.2rem;
+            max-width: 700px;
+            margin: 0 auto 2rem;
+            text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.5);
+        }
+
+        .btn {
+            display: inline-block;
+            background-color: var(--accent);
+            color: white;
+            padding: 12px 28px;
+            border-radius: 50px;
+            text-decoration: none;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            border: none;
+            cursor: pointer;
+            font-size: 1rem;
+        }
+
+        .btn:hover {
+            background-color: #e76f51;
+            transform: translateY(-3px);
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+        }
+
+        .btn-primary {
+            background-color: var(--primary);
+        }
+
+        .btn-primary:hover {
+            background-color: #0a2a5e;
+        }
+
+        .section-title {
+            text-align: center;
+            margin-bottom: 3rem;
+            position: relative;
+        }
+
+        .section-title h2 {
+            font-size: 2.2rem;
+            color: var(--primary);
+            display: inline-block;
+            padding-bottom: 10px;
+        }
+
+        .section-title h2:after {
+            content: '';
+            position: absolute;
+            width: 80px;
+            height: 4px;
+            background-color: var(--accent);
+            bottom: 0;
+            left: 50%;
+            transform: translateX(-50%);
+        }
+
+        .upload-section {
+            background-color: white;
+            padding: 3rem 2rem;
+            border-radius: 10px;
+            box-shadow: 0 5px 20px rgba(0, 0, 0, 0.08);
+            margin-bottom: 3rem;
+        }
+
+        .upload-form {
+            max-width: 800px;
+            margin: 0 auto;
+        }
+
+        .form-group {
+            margin-bottom: 1.5rem;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 0.5rem;
+            font-weight: 600;
+            color: var(--primary);
+        }
+
+        .form-control {
+            width: 100%;
+            padding: 12px 15px;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            font-size: 1rem;
+            transition: all 0.3s ease;
+        }
+
+        .form-control:focus {
+            border-color: var(--primary);
+            box-shadow: 0 0 0 3px rgba(26, 75, 140, 0.2);
+            outline: none;
+        }
+
+        textarea.form-control {
+            min-height: 120px;
+            resize: vertical;
+        }
+
+        .file-upload {
+            border: 2px dashed #ddd;
+            border-radius: 8px;
+            padding: 2rem;
+            text-align: center;
+            transition: all 0.3s ease;
+            cursor: pointer;
+        }
+
+        .file-upload:hover {
+            border-color: var(--primary);
+        }
+
+        .file-upload i {
+            font-size: 3rem;
+            color: var(--primary);
+            margin-bottom: 1rem;
+        }
+
+        .file-upload p {
+            margin-bottom: 1rem;
+        }
+
+        #file-name {
+            margin-top: 10px;
+            font-style: italic;
+            color: #666;
+        }
+
+        .gallery {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 25px;
+            margin-bottom: 3rem;
+        }
+
+        .memory-card {
+            background-color: white;
+            border-radius: 10px;
+            overflow: hidden;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.08);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+
+        .memory-card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 15px 30px rgba(0, 0, 0, 0.15);
+        }
+
+        .memory-img {
+            width: 100%;
+            height: 220px;
+            object-fit: cover;
+        }
+
+        .memory-content {
+            padding: 1.5rem;
+        }
+
+        .memory-content h3 {
+            font-size: 1.3rem;
+            margin-bottom: 0.5rem;
+            color: var(--primary);
+        }
+
+        .memory-content p {
+            color: #666;
+            margin-bottom: 1rem;
+        }
+
+        .memory-meta {
+            display: flex;
+            justify-content: space-between;
+            color: #888;
+            font-size: 0.9rem;
+            border-top: 1px solid #eee;
+            padding-top: 1rem;
+        }
+
+        .empty-gallery {
+            grid-column: 1 / -1;
+            text-align: center;
+            padding: 3rem;
+            background-color: white;
+            border-radius: 10px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.08);
+        }
+
+        .empty-gallery i {
+            font-size: 4rem;
+            color: #ddd;
+            margin-bottom: 1.5rem;
+        }
+
+        footer {
+            background-color: var(--dark);
+            color: white;
+            padding: 3rem 0 1.5rem;
+            margin-top: 3rem;
+        }
+
+        .footer-content {
+            display: flex;
+            justify-content: space-between;
+            flex-wrap: wrap;
+            gap: 2rem;
+            margin-bottom: 2rem;
+        }
+
+        .footer-section {
+            flex: 1;
+            min-width: 250px;
+        }
+
+        .footer-section h3 {
+            font-size: 1.3rem;
+            margin-bottom: 1.5rem;
+            color: var(--accent);
+            position: relative;
+            padding-bottom: 10px;
+        }
+
+        .footer-section h3:after {
+            content: '';
+            position: absolute;
+            width: 50px;
+            height: 3px;
+            background-color: var(--accent);
+            bottom: 0;
+            left: 0;
+        }
+
+        .footer-section p {
+            margin-bottom: 1rem;
+        }
+
+        .social-links {
+            display: flex;
+            gap: 15px;
+            margin-top: 1.5rem;
+        }
+
+        .social-links a {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 40px;
+            height: 40px;
+            background-color: rgba(255, 255, 255, 0.1);
+            border-radius: 50%;
+            color: white;
+            transition: all 0.3s ease;
+        }
+
+        .social-links a:hover {
+            background-color: var(--accent);
+            transform: translateY(-5px);
+        }
+
+        .footer-bottom {
+            text-align: center;
+            padding-top: 1.5rem;
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        /* Responsive Design */
+        @media (max-width: 768px) {
+            .header-content {
+                flex-direction: column;
+                gap: 20px;
+            }
+
+            nav ul {
+                gap: 15px;
+            }
+
+            .hero h2 {
+                font-size: 2.2rem;
+            }
+
+            .hero p {
+                font-size: 1rem;
+            }
+
+            .gallery {
+                grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+            }
+        }
+
+        @media (max-width: 480px) {
+            .logo h1 {
+                font-size: 1.5rem;
+            }
+
+            nav ul {
+                flex-wrap: wrap;
+                justify-content: center;
+            }
+
+            .hero {
+                padding: 3rem 1rem;
+            }
+
+            .hero h2 {
+                font-size: 1.8rem;
+            }
+
+            .section-title h2 {
+                font-size: 1.8rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <div class="container">
+            <div class="header-content">
+                <div class="logo">
+                    <i class="fas fa-graduation-cap"></i>
+                    <div>
+                        <h1>BSCS Alumni Batch 2025</h1>
+                        <p>MSU-Sulu Memories Gallery</p>
+                    </div>
+                </div>
+                <nav>
+                    <ul>
+                        <li><a href="#" class="active">Home</a></li>
+                        <li><a href="#">Gallery</a></li>
+                        <li><a href="#">Upload</a></li>
+                        <li><a href="#">About</a></li>
+                        <li><a href="#">Contact</a></li>
+                    </ul>
+                </nav>
+            </div>
+        </div>
+    </header>
+
+    <section class="hero">
+        <div class="container">
+            <h2>Cherish Our Memories Together</h2>
+            <p>Relive the unforgettable moments of our BSCS journey at MSU-Sulu. Upload and share your favorite memories with our batchmates.</p>
+            <a href="#upload" class="btn">Share Your Memory</a>
+        </div>
+    </section>
+
+    <div class="container">
+        <section id="upload" class="upload-section">
+            <div class="section-title">
+                <h2>Share a Memory</h2>
+            </div>
+            <form class="upload-form" id="memoryForm">
+                <div class="form-group">
+                    <label for="memoryTitle">Memory Title</label>
+                    <input type="text" id="memoryTitle" class="form-control" placeholder="Enter a title for your memory" required>
+                </div>
+                <div class="form-group">
+                    <label for="memoryDescription">Memory Description</label>
+                    <textarea id="memoryDescription" class="form-control" placeholder="Describe this memory..."></textarea>
+                </div>
+                <div class="form-group">
+                    <label for="memoryImage">Upload Image</label>
+                    <div class="file-upload" id="fileUploadArea">
+                        <i class="fas fa-cloud-upload-alt"></i>
+                        <p>Click to upload or drag and drop</p>
+                        <span>PNG, JPG, GIF up to 5MB</span>
+                        <input type="file" id="memoryImage" accept="image/*" style="display: none;" required>
+                        <div id="file-name"></div>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label for="uploaderName">Your Name</label>
+                    <input type="text" id="uploaderName" class="form-control" placeholder="Enter your name" required>
+                </div>
+                <button type="submit" class="btn btn-primary">Share Memory</button>
+            </form>
+        </section>
+
+        <section class="gallery-section">
+            <div class="section-title">
+                <h2>Our Memories Gallery</h2>
+            </div>
+            <div class="gallery" id="memoriesGallery">
+                <!-- Memory cards will be dynamically added here -->
+                <div class="empty-gallery" id="emptyGallery">
+                    <i class="fas fa-images"></i>
+                    <h3>No Memories Yet</h3>
+                    <p>Be the first to share a memory from our batch!</p>
+                </div>
+            </div>
+        </section>
+    </div>
+
+    <footer>
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-section">
+                    <h3>About Us</h3>
+                    <p>BSCS Alumni Batch 2025 of MSU-Sulu. This platform is dedicated to preserving and sharing our cherished memories from our college journey.</p>
+                </div>
+                <div class="footer-section">
+                    <h3>Contact Info</h3>
+                    <p><i class="fas fa-map-marker-alt"></i> MSU-Sulu, Jolo, Sulu, Philippines</p>
+                    <p><i class="fas fa-envelope"></i> bscs2025@msusulu.edu.ph</p>
+                    <p><i class="fas fa-phone"></i> +63 912 345 6789</p>
+                </div>
+                <div class="footer-section">
+                    <h3>Follow Us</h3>
+                    <p>Stay connected with our batch through social media.</p>
+                    <div class="social-links">
+                        <a href="#"><i class="fab fa-facebook-f"></i></a>
+                        <a href="#"><i class="fab fa-twitter"></i></a>
+                        <a href="#"><i class="fab fa-instagram"></i></a>
+                        <a href="#"><i class="fab fa-linkedin-in"></i></a>
+                    </div>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <p>&copy; 2023 BSCS Alumni Batch 2025, MSU-Sulu. All rights reserved.</p>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        // DOM Elements
+        const memoryForm = document.getElementById('memoryForm');
+        const fileUploadArea = document.getElementById('fileUploadArea');
+        const memoryImage = document.getElementById('memoryImage');
+        const fileName = document.getElementById('file-name');
+        const memoriesGallery = document.getElementById('memoriesGallery');
+        const emptyGallery = document.getElementById('emptyGallery');
+
+        // Sample memories data
+        let memories = [
+            {
+                id: 1,
+                title: "Graduation Day",
+                description: "Our final day as students of MSU-Sulu. So proud of everyone!",
+                image: "https://images.unsplash.com/photo-1523050854058-8df90110c9f1?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1470&q=80",
+                uploader: "Aisha S.",
+                date: "2023-06-15"
+            },
+            {
+                id: 2,
+                title: "CS Department Field Trip",
+                description: "Exploring technology companies in Manila was an eye-opening experience.",
+                image: "https://images.unsplash.com/photo-1553877522-43269d4ea984?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1470&q=80",
+                uploader: "Mohammad T.",
+                date: "2022-11-10"
+            },
+            {
+                id: 3,
+                title: "Final Project Presentation",
+                description: "After months of hard work, we finally presented our capstone project.",
+                image: "https://images.unsplash.com/photo-1543269865-cbf427effbad?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1470&q=80",
+                uploader: "Fatima A.",
+                date: "2023-03-22"
+            }
+        ];
+
+        // Initialize the gallery
+        function initGallery() {
+            if (memories.length === 0) {
+                emptyGallery.style.display = 'block';
+                return;
+            }
+            
+            emptyGallery.style.display = 'none';
+            memoriesGallery.innerHTML = '';
+            
+            memories.forEach(memory => {
+                const memoryCard = document.createElement('div');
+                memoryCard.className = 'memory-card';
+                memoryCard.innerHTML = `
+                    <img src="${memory.image}" alt="${memory.title}" class="memory-img">
+                    <div class="memory-content">
+                        <h3>${memory.title}</h3>
+                        <p>${memory.description}</p>
+                        <div class="memory-meta">
+                            <span>By: ${memory.uploader}</span>
+                            <span>${formatDate(memory.date)}</span>
+                        </div>
+                    </div>
+                `;
+                memoriesGallery.appendChild(memoryCard);
+            });
+        }
+
+        // Format date for display
+        function formatDate(dateString) {
+            const options = { year: 'numeric', month: 'long', day: 'numeric' };
+            return new Date(dateString).toLocaleDateString(undefined, options);
+        }
+
+        // Handle file upload area click
+        fileUploadArea.addEventListener('click', () => {
+            memoryImage.click();
+        });
+
+        // Handle file selection
+        memoryImage.addEventListener('change', (e) => {
+            if (e.target.files.length > 0) {
+                fileName.textContent = `Selected file: ${e.target.files[0].name}`;
+            }
+        });
+
+        // Handle form submission
+        memoryForm.addEventListener('submit', (e) => {
+            e.preventDefault();
+            
+            const title = document.getElementById('memoryTitle').value;
+            const description = document.getElementById('memoryDescription').value;
+            const uploader = document.getElementById('uploaderName').value;
+            const imageFile = memoryImage.files[0];
+            
+            if (!imageFile) {
+                alert('Please select an image to upload.');
+                return;
+            }
+            
+            // In a real application, you would upload the image to a server
+            // For this demo, we'll use a placeholder image
+            const imageUrl = URL.createObjectURL(imageFile);
+            
+            // Create new memory object
+            const newMemory = {
+                id: memories.length + 1,
+                title,
+                description,
+                image: imageUrl,
+                uploader,
+                date: new Date().toISOString().split('T')[0]
+            };
+            
+            // Add to memories array
+            memories.unshift(newMemory);
+// Update gallery
+            initGallery();
+            
+            // Reset form
+            memoryForm.reset();
+            fileName.textContent = '';
+            
+            // Show success message
+            alert('Memory shared successfully!');
+        });
+
+        // Initialize the gallery on page load
+        document.addEventListener('DOMContentLoaded', initGallery);
+    </script>
+</body>
+</html>
